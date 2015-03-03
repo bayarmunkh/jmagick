@@ -3438,6 +3438,22 @@ JNIEXPORT jobject JNICALL Java_magick_MagickImage_disposeImages
     return returnedImage;
 }
 
+JNIEXPORT void JNICALL Java_magick_MagickImage_optimizeImageLayers
+  (JNIEnv *env, jobject self)
+{
+    Image *image;
+    ExceptionInfo exception;
+    jfieldID magickImageHandleFid = NULL;
+
+    image = (Image*) getHandle(env, self, "magickImageHandle",
+                   &magickImageHandleFid);
+    if (image == NULL) {
+        throwMagickException(env, "No image to optimize");
+    }
+
+    GetExceptionInfo(&exception);
+    OptimizeImageTransparency(image, &exception);
+}
 
 JNIEXPORT jobject JNICALL Java_magick_MagickImage_nextImage
   (JNIEnv *env, jobject self)

@@ -383,6 +383,9 @@ public class MagickImage extends Magick {
     public native MagickImage disposeImages()
     throws MagickException;
 
+    public native void optimizeImageLayers()
+    throws MagickException;
+
     /**
      * Enhances the intensity differences between the lighter and
      * darker elements of the image.
