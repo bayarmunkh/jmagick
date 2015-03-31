@@ -524,6 +524,22 @@ public class MagickImage extends Magick {
 	throws MagickException;
 
     /**
+     *  Sets the image size (i.e. columns & rows).
+     * @return a boolean value to indicate success
+     * @exception MagickException on error
+     */
+    public native boolean setExtentImage(int columns, int rows)
+    throws MagickException;
+
+    /**
+     *  Extends the image as defined by the geometry, gravity, and image background color
+     * @return A new extended image
+     * @exception MagickException on error
+     */
+    public native MagickImage extentImage(Rectangle geometry)
+    throws MagickException;
+
+    /**
      * Creates a new image that reflects each scanline
      * in the vertical direction.
      * @return a new image that has been flipped

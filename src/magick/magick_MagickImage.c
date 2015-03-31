@@ -1322,8 +1322,68 @@ JNIEXPORT jboolean JNICALL Java_magick_MagickImage_equalizeImage
     return EqualizeImage(image);
 }
 
+/*
+ * Class:     magick_MagickImage
+ * Method:    extentImage
+ * Signature: (II)Lmagick/MagickImage;
+ */
+JNIEXPORT jboolean JNICALL Java_magick_MagickImage_setExtentImage
+    (JNIEnv *env, jobject self, jint columns, jint rows)
+{
+    Image *image;
+    int result;
 
+    image = (Image*) getHandle(env, self, "magickImageHandle", NULL);
+    if (image == NULL) {
+        throwMagickException(env, "Cannot obtain image handle");
+        return NULL;
+    }
 
+    return SetImageExtent(image, columns, rows);
+}
+
+/*
+ * Class:     magick_MagickImage
+ * Method:    extentImage
+ * Signature: (Ljava/awt/Rectangle;)Lmagick/MagickImage;
+ */
+JNIEXPORT jobject JNICALL Java_magick_MagickImage_extentImage
+    (JNIEnv *env, jobject self, jobject jRect)
+{
+    RectangleInfo iRect;
+    jobject newImage;
+    Image *image, *extendedImage;
+    ExceptionInfo exception;
+
+    if (!getRectangle(env, jRect, &iRect)) {
+    throwMagickException(env, "Cannot retrieve rectangle information");
+    return NULL;
+    }
+
+    image = (Image*) getHandle(env, self, "magickImageHandle", NULL);
+    if (image == NULL) {
+    throwMagickException(env, "Cannot obtain image handle");
+    return NULL;
+    }
+
+    GetExceptionInfo(&exception);
+    extendedImage = ExtentImage(image, &iRect, &exception);
+    if (extendedImage == NULL) {
+    throwMagickApiException(env, "Cannot extend image", &exception);
+    DestroyExceptionInfo(&exception);
+    return NULL;
+    }
+    DestroyExceptionInfo(&exception);
+
+    newImage = newImageObject(env, extendedImage);
+    if (newImage == NULL) {
+    DestroyImages(extendedImage);
+    throwMagickException(env, "Cannot create new MagickImage object");
+    return NULL;
+    }
+
+    return newImage;
+}
 
 /*
  * Class:     magick_MagickImage
